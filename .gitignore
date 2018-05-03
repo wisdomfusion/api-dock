@@ -1,5 +1,4 @@
 *.py[cod]
-
 __pycache__
 
 pip-log.txt
@@ -12,13 +11,8 @@ nosetests.xml
 .pydevproject
 .idea
 
-# SQLite databases
 *.sqlite
-
-# Virtual environment
 venv
-
-# Environment files
 .env
 .env-mysql
 
