@@ -6,22 +6,19 @@ from dotenv import load_dotenv
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand, upgrade
 from app import create_app, db
-from app.models import User, Role
+from app.models import User, Role, App, Api, ApiGroup, ApiResponse, ApiExample, Log
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 
 COV = None
-if os.environ.get('APP_COVERAGE'):
+if os.getenv('APP_COVERAGE'):
     import coverage
     COV = coverage.coverage(branch=True, include='app/*')
     COV.start()
 
-
 app = create_app(os.getenv('APP_CONFIG') or 'default')
-manager = Manager(app)
-migrate = Migrate(app, db)
 
 
 @app.shell_context_processor
@@ -29,16 +26,26 @@ def make_shell_context():
     return dict(app=app,
                 db=db,
                 User=User,
-                Role=Role)
+                Role=Role,
+                App=App,
+                Api=Api,
+                ApiGroup=ApiGroup,
+                ApiResponse=ApiResponse,
+                ApiExample=ApiExample,
+                Log=Log)
 
 
-@app.cli.command()
-@click.option('--coverage/--no-coverage',
-              default=False,
-              help='Run tests under code coverage.')
-def test(coverage):
+manager = Manager(app)
+manager.add_command('shell', Shell(make_shell_context))
+
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
+
+
+@manager.command
+def test(coverage=False):
     """Run the unit tests."""
-    if coverage and not os.environ.get('APP_COVERAGE'):
+    if coverage and not os.getenv('APP_COVERAGE'):
         import subprocess
         os.environ['APP_COVERAGE'] = '1'
         sys.exit(subprocess.call(sys.argv))
@@ -58,13 +65,7 @@ def test(coverage):
         COV.erase()
 
 
-@app.cli.command()
-@click.option('--length',
-              default=25,
-              help='Number of functions to include in the profiler report.')
-@click.option('--profile-dir',
-              default=None,
-              help='Directory where profiler data files are saved.')
+@manager.command
 def profile(length, profile_dir):
     """Start the application under the code profiler"""
     from werkzeug.contrib.profiler import ProfilerMiddleware
@@ -72,16 +73,13 @@ def profile(length, profile_dir):
     app.run()
 
 
-@app.cli.command()
+@manager.command
 def deploy():
     """Run deployment tasks."""
     upgrade()
     Role.insert_roles()
     User.insert_root_admin()
 
-
-manager.add_command('shell', Shell(make_shell_context))
-manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
     manager.run()

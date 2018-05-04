@@ -1,7 +1,7 @@
+import jwt
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app, request, url_for
-import jwt
 from . import db
 
 
@@ -17,7 +17,6 @@ class Permission:
 
 class Role(db.Model):
     """This class reprsents the role table."""
-
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -91,7 +90,6 @@ class Role(db.Model):
 
 class User(db.Model):
     """This class represents the user table."""
-
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -117,6 +115,7 @@ class User(db.Model):
         user = User(name='sysop',
                     password=generate_password_hash('Passw0rd!'),
                     role_id=Role.query.filter_by(title='Administrator').first())
+
         db.session.add(user)
         db.session.commit()
 
@@ -167,51 +166,76 @@ class User(db.Model):
 
 
 class Log(db.Model):
-
+    """logs"""
     __tablename__ = 'logs'
 
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     action = db.Column(db.String(256))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Log %r>' % self.action
 
 
 class App(db.Model):
-
+    """apps"""
     __tablename__ = 'apps'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20), unique=True)
+    title = db.Column(db.String(20), unique=True, nullable=False)
+    slug = db.Column(db.String(20), unique=True, nullable=False)
+    version = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    type = db.Column(db.SmallInteger, default=1)       # 1 Web, 2 APP, 3 PC, 4 other
+    auth_type = db.Column(db.SmallInteger, default=0)  # 0 No Auth, 1 Basic Auth, 2 OAuth 2.0
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, default=None)
 
     def __repr__(self):
         return '<App %r>' % self.title
 
 
-class Api(db.Model):
-
-    __tablename__ = 'apis'
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20))
-
-    def __repr__(self):
-        return '<Api %r>' % self.title
-
-
 class ApiGroup(db.Model):
-
+    """api_groups"""
     __tablename__ = 'api_groups'
 
     id = db.Column(db.Integer, primary_key=True)
+    pid = db.Column(db.Integer, nullable=False,)
     title = db.Column(db.String(20))
+
+    def __init__(self, name):
+        self.name = name
 
     def __repr__(self):
         return '<ApiGroup %r>' % self.title
 
 
-class ApiResponse(db.Model):
+class Api(db.Model):
+    """apis"""
+    __tablename__ = 'apis'
 
+    id = db.Column(db.Integer, primary_key=True)
+    app_id = db.Column(db.Integer, db.ForeignKey('apps.id'))
+    group_id = db.Column(db.Integer, db.ForeignKey('api_groups.id'))
+    title = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    url = db.Column(db.String(256), nullable=False)
+    method = db.Column(db.String(10), nullable=False, default='GET')
+    headers = db.Column(db.Text, nullable=True)
+    need_auth = db.Column(db.Boolean, default=0)    # 0 No auth required, 1 auth required
+    status = db.Column(db.SmallInteger, default=1)  # 1, 2, 3
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, default=None)
+
+    def __repr__(self):
+        return '<Api %r>' % self.title
+
+
+class ApiResponse(db.Model):
+    """api_responses"""
     __tablename__ = 'api_responses'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -222,7 +246,7 @@ class ApiResponse(db.Model):
 
 
 class ApiExample(db.Model):
-
+    """api_examples"""
     __tablename__ = 'api_examples'
 
     id = db.Column(db.Integer, primary_key=True)

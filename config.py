@@ -1,32 +1,32 @@
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
 
 
 class Config:
     """Parent configuration class."""
-    APP_KEY = os.environ.get('APP_KEY')
-    APP_URL = os.environ.get('APP_URL')
+    APP_CONFIG = os.getenv('APP_CONFIG') or 'default'
+    APP_KEY = os.getenv('APP_KEY')
+    APP_URL = os.getenv('APP_URL')
 
-    DB_CONNECTION = os.environ.get('DB_CONNECTION')
-    DB_HOST = os.environ.get('DB_HOST')
-    DB_PORT = os.environ.get('3306')
-    DB_DATABASE = os.environ.get('DB_DATABASE')
-    DB_USERNAME = os.environ.get('DB_USERNAME')
-    DB_PASSWORD = os.environ.get('DB_PASSWORD')
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 
-    CACHE_DRIVER = os.environ.get('CACHE_DRIVER')
-    SESSION_DRIVER = os.environ.get('SESSION_DRIVER')
+    CACHE_DRIVER = os.getenv('CACHE_DRIVER')
+    SESSION_DRIVER = os.getenv('SESSION_DRIVER')
 
-    REDIS_HOST = os.environ.get('REDIS_HOST')
-    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
-    REDIS_PORT = os.environ.get('REDIS_PORT')
+    REDIS_HOST = os.getenv('REDIS_HOST')
+    REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
+    REDIS_PORT = os.getenv('REDIS_PORT')
 
-    JWT_SECRET = os.environ.get('JWT_SECRET')
-    JWT_TTL = os.environ.get('JWT_TTL') or 60
+    JWT_SECRET = os.getenv('JWT_SECRET')
+    JWT_TTL = os.getenv('JWT_TTL') or 60
 
-    APP_ROOT_ADMIN = os.environ.get('APP_ROOT_ADMIN')
+    APP_ROOT_ADMIN = os.getenv('APP_ROOT_ADMIN')
 
-    USER_PER_PAGE = os.environ.get('USER_PER_PAGE') or 20
+    USER_PER_PAGE = os.getenv('USER_PER_PAGE') or 20
 
     @staticmethod
     def init_app(app):
