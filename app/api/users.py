@@ -1,8 +1,10 @@
 from flask import jsonify, request, g, current_app, url_for
 from flask_restful import Resource
+from . import api
 from ..models import User, Permission
 
 
+@api.resource('/users')
 class UserList(Resource):
     def get(self):
         page = request.args.get('page', 1, type=int)
@@ -26,6 +28,7 @@ class UserList(Resource):
         })
 
 
+@api.resource('/users/<int:id>')
 class UserItem(Resource):
     def get(self, id):
         # user = User.
@@ -41,6 +44,7 @@ class UserItem(Resource):
         return {}
 
 
+@api.resource('/users/<int:id>/status')
 class UserStatus(Resource):
-    def patch(self):
+    def patch(self, id):
         return {}

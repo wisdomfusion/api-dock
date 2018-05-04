@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 
@@ -16,7 +15,7 @@ def create_app(config_name):
 
     db.init_app(app)
 
-    from .api import api as api_blueprint
+    from .api import api_blueprint
     app.register_blueprint(api_blueprint)
 
     return app

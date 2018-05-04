@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-import click
+from flask import url_for
 from dotenv import load_dotenv
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand, upgrade
@@ -40,6 +40,25 @@ manager.add_command('shell', Shell(make_shell_context))
 
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
+
+
+@manager.command
+def routes():
+    """Helper to list routes."""
+    import urllib
+    output = []
+    for rule in app.url_map.iter_rules():
+
+        options = {}
+        for arg in rule.arguments:
+            options[arg] = "[{0}]".format(arg)
+
+        methods = ','.join(rule.methods)
+        line = urllib.parse.unquote("{:30s} {:50s} {}".format(rule.endpoint, methods, rule))
+        output.append(line)
+
+    for line in sorted(output):
+        print(line)
 
 
 @manager.command
