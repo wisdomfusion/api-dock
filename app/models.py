@@ -61,13 +61,13 @@ class Role(db.Model):
         default_role = 'User'
 
         for r in roles:
-            role = Role.query.filter_by(name=r).first()
+            role = Role.query.filter_by(title=r).first()
             if role is None:
-                role = Role(name=r)
+                role = Role(title=r)
             role.reset_permissions()
             for perm in roles[r]:
                 role.add_permission(perm)
-            role.default = (role.name == default_role)
+            role.default = (role.title == default_role)
             db.session.add(role)
         db.session.commit()
 
@@ -86,7 +86,7 @@ class Role(db.Model):
         return self.permissions & perm == perm
 
     def __repr__(self):
-        return '<Role %r>' % self.name
+        return '<Role %r>' % self.title
 
 
 class User(db.Model):
@@ -108,9 +108,17 @@ class User(db.Model):
         super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.name == current_app.config.get('APP_ROOT_ADMIN'):
-                self.role = Role.query.filter_by(name='Administrator').first()
+                self.role = Role.query.filter_by(title='Administrator').first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
+
+    @staticmethod
+    def insert_root_admin():
+        user = User(name='sysop',
+                    password=generate_password_hash('Passw0rd!'),
+                    role_id=Role.query.filter_by(title='Administrator').first())
+        db.session.add(user)
+        db.session.commit()
 
     def verify_password(self, password):
         return check_password_hash(self.password, password)
@@ -156,3 +164,69 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.name
+
+
+class Log(db.Model):
+
+    __tablename__ = 'logs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    action = db.Column(db.String(256))
+
+    def __repr__(self):
+        return '<Log %r>' % self.action
+
+
+class App(db.Model):
+
+    __tablename__ = 'apps'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(20), unique=True)
+
+    def __repr__(self):
+        return '<App %r>' % self.title
+
+
+class Api(db.Model):
+
+    __tablename__ = 'apis'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(20))
+
+    def __repr__(self):
+        return '<Api %r>' % self.title
+
+
+class ApiGroup(db.Model):
+
+    __tablename__ = 'api_groups'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(20))
+
+    def __repr__(self):
+        return '<ApiGroup %r>' % self.title
+
+
+class ApiResponse(db.Model):
+
+    __tablename__ = 'api_responses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(20))
+
+    def __repr__(self):
+        return '<ApiResponse %r>' % self.key
+
+
+class ApiExample(db.Model):
+
+    __tablename__ = 'api_examples'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(20))
+
+    def __repr__(self):
+        return '<ApiExample %r>' % self.title

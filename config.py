@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     """Parent configuration class."""
-    SECRET_KEY = os.environ.get('APP_KEY')
+    APP_KEY = os.environ.get('APP_KEY')
     APP_URL = os.environ.get('APP_URL')
 
     DB_CONNECTION = os.environ.get('DB_CONNECTION')
@@ -23,6 +23,10 @@ class Config:
 
     JWT_SECRET = os.environ.get('JWT_SECRET')
     JWT_TTL = os.environ.get('JWT_TTL') or 60
+
+    APP_ROOT_ADMIN = os.environ.get('APP_ROOT_ADMIN')
+
+    USER_PER_PAGE = os.environ.get('USER_PER_PAGE') or 20
 
     @staticmethod
     def init_app(app):
