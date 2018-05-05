@@ -8,7 +8,7 @@ if os.path.exists(dotenv_path):
 
 class Config:
     """Parent configuration class."""
-    APP_CONFIG = os.getenv('APP_CONFIG') or 'default'
+    APP_CONFIG = os.getenv('APP_CONFIG', 'default')
     APP_KEY = os.getenv('APP_KEY')
     APP_URL = os.getenv('APP_URL')
 
@@ -22,11 +22,11 @@ class Config:
     REDIS_PORT = os.getenv('REDIS_PORT')
 
     JWT_SECRET = os.getenv('JWT_SECRET')
-    JWT_TTL = os.getenv('JWT_TTL') or 60
+    JWT_TTL = os.getenv('JWT_TTL', 60)
 
     APP_ROOT_ADMIN = os.getenv('APP_ROOT_ADMIN')
 
-    USER_PER_PAGE = os.getenv('USER_PER_PAGE') or 20
+    USER_PER_PAGE = os.getenv('USER_PER_PAGE', 20)
 
     @staticmethod
     def init_app(app):

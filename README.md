@@ -16,8 +16,10 @@ APP_KEY=
 APP_URL=
 APP_COVERAGE=1
 
-DATABASE_URI=postgresql://postgres:123456@localhost:5432/apidockdb
-DATABASE_TEST_URI=postgresql://postgres:123456@localhost:5432/apidocktestdb
+#SQLALCHEMY_DATABASE_URI=postgresql://postgres:123456@localhost:5432/apidockdb
+#SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:123456@localhost:3306/apidockdb
+SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:123456@localhost/apidockdb?unix_socket=/opt/local/var/run/mysql57/mysqld.sock
+#SQLALCHEMY_DATABASE_URI=sqlite:////db/apidock.sqlite
 
 CACHE_DRIVER=redis
 SESSION_DRIVER=redis
