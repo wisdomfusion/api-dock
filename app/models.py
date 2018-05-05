@@ -85,7 +85,7 @@ class Role(db.Model):
         return self.permissions & perm == perm
 
     def __repr__(self):
-        return '<Role %r>' % self.title
+        return '<Role {}>'.format(self.title)
 
 
 class User(db.Model):
@@ -162,7 +162,7 @@ class User(db.Model):
             return 'Invalid token. Please login again.'
 
     def __repr__(self):
-        return '<User %r>' % self.name
+        return '<User {}>'.format(self.name)
 
 
 class Log(db.Model):
@@ -175,7 +175,7 @@ class Log(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Log %r>' % self.action
+        return '<Log {}>'.format(self.action)
 
 
 class App(db.Model):
@@ -195,7 +195,7 @@ class App(db.Model):
     api_groups = db.relationship('ApiGroup', backref='app', lazy='dynamic')
 
     def __repr__(self):
-        return '<App %r>' % self.title
+        return '<App {}>'.format(self.title)
 
 
 class ApiGroup(db.Model):
@@ -215,7 +215,7 @@ class ApiGroup(db.Model):
         self.name = name
 
     def __repr__(self):
-        return '<ApiGroup %r>' % self.title
+        return '<ApiGroup {}>'.format(self.title)
 
 
 class Api(db.Model):
@@ -239,7 +239,7 @@ class Api(db.Model):
     api_examples = db.relationship('ApiExample', backref='api', lazy='dynamic')
 
     def __repr__(self):
-        return '<Api %r>' % self.title
+        return '<Api {}>'.format(self.title)
 
 
 class ApiResponse(db.Model):
@@ -257,7 +257,7 @@ class ApiResponse(db.Model):
     deleted_at = db.Column(db.DateTime, default=None)
 
     def __repr__(self):
-        return '<ApiResponse %r>' % self.key
+        return '<ApiResponse {}>'.format(self.key)
 
 
 class ApiExample(db.Model):
@@ -273,4 +273,4 @@ class ApiExample(db.Model):
     deleted_at = db.Column(db.DateTime, default=None)
 
     def __repr__(self):
-        return '<ApiExample %r>' % self.title
+        return '<ApiExample {}>'.format(self.title)

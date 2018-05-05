@@ -12,7 +12,7 @@ class Config:
     APP_KEY = os.getenv('APP_KEY')
     APP_URL = os.getenv('APP_URL')
 
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 
     CACHE_DRIVER = os.getenv('CACHE_DRIVER')
     SESSION_DRIVER = os.getenv('SESSION_DRIVER')
