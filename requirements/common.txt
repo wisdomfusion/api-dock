@@ -12,6 +12,7 @@ Jinja2==2.10
 MarkupSafe==1.0
 psycopg2==2.7.4
 PyJWT==1.6.1
+PyMySQL==0.8.0
 python-dateutil==2.7.2
 python-dotenv==0.8.2
 pytz==2018.4

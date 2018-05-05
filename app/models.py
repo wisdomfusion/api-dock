@@ -16,11 +16,11 @@ class Permission:
 
 
 class Role(db.Model):
-    """This class reprsents the role table."""
+    """This class represents the role table."""
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20), unique=True)
+    title = db.Column(db.String(80), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
     users = db.relationship('User', backref='role', lazy='dynamic')
@@ -166,7 +166,7 @@ class User(db.Model):
 
 
 class Log(db.Model):
-    """logs"""
+    """This class create logs table, to record users' actions."""
     __tablename__ = 'logs'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -179,31 +179,37 @@ class Log(db.Model):
 
 
 class App(db.Model):
-    """apps"""
+    """The class to manage apps table."""
     __tablename__ = 'apps'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20), unique=True, nullable=False)
-    slug = db.Column(db.String(20), unique=True, nullable=False)
-    version = db.Column(db.String(20), nullable=False)
+    title = db.Column(db.String(80), unique=True, nullable=False)
+    slug = db.Column(db.String(80), unique=True, nullable=False)
+    version = db.Column(db.String(80), nullable=False)
     description = db.Column(db.Text, nullable=True)
     type = db.Column(db.SmallInteger, default=1)       # 1 Web, 2 APP, 3 PC, 4 other
     auth_type = db.Column(db.SmallInteger, default=0)  # 0 No Auth, 1 Basic Auth, 2 OAuth 2.0
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, default=None)
+    api_groups = db.relationship('ApiGroup', backref='app', lazy='dynamic')
 
     def __repr__(self):
         return '<App %r>' % self.title
 
 
 class ApiGroup(db.Model):
-    """api_groups"""
+    """This class represents api_groups table."""
     __tablename__ = 'api_groups'
 
     id = db.Column(db.Integer, primary_key=True)
-    pid = db.Column(db.Integer, nullable=False,)
-    title = db.Column(db.String(20))
+    pid = db.Column(db.Integer, nullable=False)
+    app_id = db.Column(db.Integer, db.ForeignKey('apps.id'))
+    title = db.Column(db.String(80), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, default=None)
+    api_list = db.relationship('Api', backref='api_group', lazy='dynamic')
 
     def __init__(self, name):
         self.name = name
@@ -213,44 +219,58 @@ class ApiGroup(db.Model):
 
 
 class Api(db.Model):
-    """apis"""
+    """This class represents apis table."""
     __tablename__ = 'apis'
 
     id = db.Column(db.Integer, primary_key=True)
     app_id = db.Column(db.Integer, db.ForeignKey('apps.id'))
     group_id = db.Column(db.Integer, db.ForeignKey('api_groups.id'))
-    title = db.Column(db.String(20), nullable=False)
+    title = db.Column(db.String(80), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    url = db.Column(db.String(256), nullable=False)
-    method = db.Column(db.String(10), nullable=False, default='GET')
-    headers = db.Column(db.Text, nullable=True)
+    request_url = db.Column(db.String(256), nullable=False)
+    request_method = db.Column(db.String(10), nullable=False, default='GET')
+    request_header = db.Column(db.Text, nullable=True)
     need_auth = db.Column(db.Boolean, default=0)    # 0 No auth required, 1 auth required
     status = db.Column(db.SmallInteger, default=1)  # 1, 2, 3
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, default=None)
+    api_responses = db.relationship('ApiResponse', backref='api', lazy='dynamic')
+    api_examples = db.relationship('ApiExample', backref='api', lazy='dynamic')
 
     def __repr__(self):
         return '<Api %r>' % self.title
 
 
 class ApiResponse(db.Model):
-    """api_responses"""
+    """This class represents api_responses table, which holds APIs' responses."""
     __tablename__ = 'api_responses'
 
     id = db.Column(db.Integer, primary_key=True)
-    key = db.Column(db.String(20))
+    api_id = db.Column(db.Integer, db.ForeignKey('apis.id'))
+    field = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(256), nullable=True)
+    nullable = db.Column(db.Boolean, default=True)
+    data_type = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, default=None)
 
     def __repr__(self):
         return '<ApiResponse %r>' % self.key
 
 
 class ApiExample(db.Model):
-    """api_examples"""
+    """Table to store APIs' examples, api_examples table."""
     __tablename__ = 'api_examples'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20))
+    api_id = db.Column(db.Integer, db.ForeignKey('apis.id'))
+    title = db.Column(db.String(80), nullable=False)
+    body = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, default=None)
 
     def __repr__(self):
         return '<ApiExample %r>' % self.title
