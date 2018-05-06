@@ -1,5 +1,10 @@
-from flask import g, jsonify
-from ..models import User
+from flask import request, g, jsonify
+from flask_restful import Resource
 from . import api
-from .errors import unauthorized, forbidden
+from ..models import User
 
+
+@api.resource('/login')
+class Login(Resource):
+    def post(self):
+        return {}, 200

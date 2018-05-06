@@ -3,6 +3,7 @@ import json
 from app import create_app, db
 from app.models import User, Role
 
+
 class ApiTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
@@ -18,12 +19,12 @@ class ApiTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def get_api_headers(self, name, password):
-        return {}
+        return {'token': ''}
 
     def test_404(self):
         response = self.client.get(
             '/wrong/url',
-            headers = self.get_api_headers('name', 'password')
+            headers=self.get_api_headers('name', 'password')
         )
         self.assertEqual(response.status_code, 404)
         json_response = json.loads(response.get_data(as_text=True))

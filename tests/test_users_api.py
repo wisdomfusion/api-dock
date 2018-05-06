@@ -1,9 +1,10 @@
 import unittest
-from flask import current_app
+import json
 from app import create_app, db
+from app.models import User, Role
 
 
-class BasicsTestCase(unittest.TestCase):
+class UsersApiTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
         self.app_context = self.app.app_context()
@@ -14,9 +15,3 @@ class BasicsTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-
-    def test_app_exists(self):
-        self.assertFalse(current_app is None)
-
-    def test_app_is_testing(self):
-        self.assertTrue(current_app.config['TESTING'])

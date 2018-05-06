@@ -18,7 +18,7 @@ if os.getenv('APP_COVERAGE'):
     COV = coverage.coverage(branch=True, include='app/*')
     COV.start()
 
-app = create_app(os.getenv('APP_CONFIG') or 'default')
+app = create_app(os.getenv('APP_CONFIG', 'default'))
 
 
 @app.shell_context_processor
@@ -66,7 +66,6 @@ def test(coverage=False):
     """Run the unit tests."""
     if coverage and not os.getenv('APP_COVERAGE'):
         import subprocess
-        os.environ['APP_COVERAGE'] = '1'
         sys.exit(subprocess.call(sys.argv))
 
     import unittest

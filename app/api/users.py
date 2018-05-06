@@ -27,6 +27,9 @@ class UserList(Resource):
             'total': pagination.total
         })
 
+    def post(self):
+        return {}, 200
+
 
 @api.resource('/users/<int:id>')
 class UserItem(Resource):
@@ -34,14 +37,11 @@ class UserItem(Resource):
         # user = User.
         return id
 
-    def post(self):
-        return {}, 200
-
     def patch(self):
         return {}, 200
 
     def delete(self):
-        return {}
+        return {}, 200
 
 
 @api.resource('/users/<int:id>/status')

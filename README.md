@@ -16,10 +16,14 @@ APP_KEY=
 APP_URL=
 APP_COVERAGE=1
 
-#SQLALCHEMY_DATABASE_URI=postgresql://postgres:123456@localhost:5432/apidockdb
-#SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:123456@localhost:3306/apidockdb
-SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:123456@localhost/apidockdb?unix_socket=/opt/local/var/run/mysql57/mysqld.sock
-#SQLALCHEMY_DATABASE_URI=sqlite:////db/apidock.sqlite
+# PostgreSQL connection
+#SQLALCHEMY_DATABASE_URI=postgresql://<db_user>:<password>@<host>[:<port>]/<db_name>
+# MySQL connection using PyMySQL
+#SQLALCHEMY_DATABASE_URI=mysql+pymysql://<db_user>:<password>@<host>[:<port>]/<db_name>
+# MySQL connection using PyMySQL via UNIX sock instead of port
+SQLALCHEMY_DATABASE_URI=mysql+pymysql://<db_user>:<password>@<host>/<db_name>?unix_socket=<mysqld_sock_path>
+# SQLite connection
+#SQLALCHEMY_DATABASE_URI=sqlite:////db/<db_file.sqlite>
 
 CACHE_DRIVER=redis
 SESSION_DRIVER=redis
@@ -34,5 +38,4 @@ JWT_TTL=60
 APP_ROOT_ADMIN=sysop
 
 USER_PER_PAGE=20
-
 ```
