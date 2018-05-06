@@ -28,7 +28,7 @@ class UserList(Resource):
         })
 
     def post(self):
-        data = request.json
+        data = request.get_json(force=True)
         return data
 
 

@@ -17,6 +17,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     status = db.Column(db.Integer, default=1)
     last_login_at = db.Column(db.DateTime, default=None)
+    last_login_ip = db.Column(db.String(15), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, default=None)
@@ -53,18 +54,30 @@ class User(db.Model):
         return self.role is not None and self.role.has_permission(perm)
 
     def is_administrator(self):
-        return self.can(Permission.Permission.ADMIN)
+        return self.can(Permission.ADMIN)
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'status': self.status,
+            'last_login_at': self.last_login_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'last_login_ip': self.last_login_ip
+        }
 
     def encode_auth_token(self):
         try:
             payload = {
-                'exp': datetime.utcnow() + timedelta(days=0, minutes=current_app.config.get('JWT_TTL')),
+                'exp': datetime.utcnow() + timedelta(days=0, minutes=int(current_app.config.get('JWT_TTL'))),
                 'iat': datetime.utcnow(),
-                'sub': self.id
+                'sub': {
+                    'id': self.id,
+                    'name': self.name
+                }
             }
             return jwt.encode(
                 payload,
-                current_app.config['JWT_SECRET'],
+                current_app.config.get('JWT_SECRET'),
                 algorithm='HS256'
             )
         except Exception as e:
@@ -81,4 +94,4 @@ class User(db.Model):
             return 'Invalid token. Please login again.'
 
     def __repr__(self):
-        return '<User {}>'.format(self.name)
+        return '<User id:{} name:{}>'.format(self.id, self.name)
