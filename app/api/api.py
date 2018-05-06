@@ -1,7 +1,7 @@
 from flask import jsonify, request, g, current_app, url_for
 from flask_restful import Resource
 from app.api import api
-from app.models import Api
+from app.models.Api import Api
 
 
 @api.resource('/apis')

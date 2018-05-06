@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from flask import current_app, request, url_for
-from .shared import db
+from . import db
 
 
 class ApiExample(db.Model):

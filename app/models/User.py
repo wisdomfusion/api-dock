@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime, timedelta
 from flask import current_app, request, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-from .shared import db
+from . import db
 from .Permission import Permission
 from .Role import Role
 
