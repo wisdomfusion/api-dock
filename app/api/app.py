@@ -1,13 +1,13 @@
 from flask import jsonify, request, g, current_app, url_for
 from flask_restful import Resource
-from . import api
-from ..models import App
+from app.api import api
+from app.models import App
 
 
 @api.resource('/apps')
 class AppList(Resource):
     def get(self):
-        apps = App.query
+        apps = App.query.all()
         return jsonify(apps)
 
     def post(self):

@@ -1,12 +1,20 @@
 #!/usr/bin/env python
 import os
 import sys
-from flask import url_for
 from dotenv import load_dotenv
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand, upgrade
 from app import create_app, db
-from app.models import User, Role, App, Api, ApiGroup, ApiResponse, ApiExample, Log
+
+from app.models.User import User
+from app.models.Role import Role
+from app.models.App import App
+from app.models.Api import Api
+from app.models.ApiGroup import ApiGroup
+from app.models.ApiResponse import ApiResponse
+from app.models.ApiExample import ApiExample
+from app.models.Log import Log
+
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
@@ -23,16 +31,9 @@ app = create_app(os.getenv('APP_CONFIG', 'default'))
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(app=app,
-                db=db,
-                User=User,
-                Role=Role,
-                App=App,
-                Api=Api,
-                ApiGroup=ApiGroup,
-                ApiResponse=ApiResponse,
-                ApiExample=ApiExample,
-                Log=Log)
+    return dict(app=app, db=db,
+                User=User, Role=Role, App=App, Api=Api, ApiGroup=ApiGroup,
+                ApiResponse=ApiResponse, ApiExample=ApiExample, Log=Log)
 
 
 manager = Manager(app)

@@ -1,7 +1,7 @@
 from flask import jsonify, request, g, current_app, url_for
 from flask_restful import Resource
-from . import api
-from ..models import User, Permission
+from app.api import api
+from app.models import User, Permission
 
 
 @api.resource('/users')
@@ -28,7 +28,8 @@ class UserList(Resource):
         })
 
     def post(self):
-        return {}, 200
+        data = request.json
+        return data
 
 
 @api.resource('/users/<int:id>')

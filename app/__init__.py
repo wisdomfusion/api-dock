@@ -1,9 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from config import config
-
-db = SQLAlchemy()
+from app.models.shared import db
 
 
 def create_app(config_name):
@@ -17,5 +15,9 @@ def create_app(config_name):
 
     from .api import api_blueprint
     app.register_blueprint(api_blueprint)
+
+    @app.route('/')
+    def index():
+        return 'API Dock, a web application for managing and testing your APIs.'
 
     return app
