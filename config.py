@@ -43,6 +43,7 @@ class TestingConfig(Config):
     TESTING = True
     DEBUG = True
     WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_TEST_URI')
 
 
 class StagingConfig(Config):
