@@ -18,6 +18,6 @@ def forbidden(message):
     return make_response(jsonify(response), 403)
 
 
-@api.app_errorhandler(ValidationError)
-def validation_error(e):
-    return bad_request(e.args[0])
+# @api.app_errorhandler(ValidationError)
+# def validation_error(e):
+#     return bad_request(e.args[0])

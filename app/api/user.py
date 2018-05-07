@@ -8,7 +8,7 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
-@api.resource('/users', endpoint='api.users')
+@api.resource('/users', endpoint='api_users')
 class UserList(Resource):
     """
     User list and new user
@@ -35,8 +35,8 @@ class UserList(Resource):
             users = users_schema.dump(pagination.items).data
             response_data = {
                 'users': users,
-                'prev': url_for('api.users', page=page-1) if pagination.has_prev else None,
-                'next': url_for('api.users', page=page+1) if pagination.has_next else None,
+                'prev': url_for('api_users', page=page-1) if pagination.has_prev else None,
+                'next': url_for('api_users', page=page+1) if pagination.has_next else None,
                 'total': pagination.total
             }
             return make_response(response_data)
@@ -55,7 +55,7 @@ class UserList(Resource):
         user = User.query.filter_by(name=data['name']).first()
 
         if user:
-            return make_response({'status': 'error', 'message': 'User name already exists.'}, 400)
+            return make_response({'status': 'error', 'message': 'User `{}` already exists.'.format(data['name'])}, 400)
 
         user = User(**data)
         try:

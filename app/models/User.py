@@ -1,6 +1,7 @@
 import jwt
 from datetime import datetime, timedelta
 from flask import current_app
+from flask_jwt_extended import create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from marshmallow import fields, validate
 from . import db, ma
@@ -49,7 +50,7 @@ class User(db.Model):
         db.session.commit()
 
     def verify_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password_hash, password)
 
     def save(self):
         db.session.add(self)
@@ -75,22 +76,12 @@ class User(db.Model):
         }
 
     def encode_auth_token(self):
-        try:
-            payload = {
-                'exp': datetime.utcnow() + timedelta(days=0, minutes=int(current_app.config.get('JWT_TTL', 60))),
-                'iat': datetime.utcnow(),
-                'sub': {
-                    'user_id': self.id,
-                    'username': self.name
-                }
-            }
-            return jwt.encode(
-                payload,
-                current_app.config.get('JWT_SECRET'),
-                algorithm='HS256'
-            )
-        except Exception as e:
-            return e
+        access_token = create_access_token(
+            identity={'id': self.id, 'name': self.name},
+            fresh=True,
+            expires_delta=timedelta(minutes=int(current_app.config.get('JWT_TTL', 60)))
+        )
+        return access_token
 
     @staticmethod
     def decode_auth_token(token):
@@ -107,11 +98,9 @@ class User(db.Model):
         return '<User id:{} name:{}>'.format(self.id, self.name)
 
 
-class UserSchema(ma.Schema):
-    class Meta:
-        # Fields to expose
-        fields = ('name', 'role_id', 'status', 'created_at')
-    id = fields.Integer()
+class UserSchema(ma.ModelSchema):
+    id = fields.Integer(dump_only=True)
     name = fields.String(required=True, validate=validate.Length(3, 20))
+    password = fields.String()
     role_id = fields.Integer()
-    status = fields.Integer(validate=validate.OneOf(choices=(1, 2)))
+    status = fields.Integer()

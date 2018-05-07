@@ -21,7 +21,7 @@ class Config:
     REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
     REDIS_PORT = os.getenv('REDIS_PORT')
 
-    JWT_SECRET = os.getenv('JWT_SECRET')
+    JWT_SECRET = os.getenv('JWT_SECRET_KEY')
     JWT_TTL = os.getenv('JWT_TTL', 60)
 
     APP_ROOT_ADMIN = os.getenv('APP_ROOT_ADMIN')
