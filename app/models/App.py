@@ -7,7 +7,7 @@ class App(db.Model):
     """The class to manage apps table."""
     __tablename__ = 'apps'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(80), unique=True, nullable=False)
     slug = db.Column(db.String(80), unique=True, nullable=False)
     version = db.Column(db.String(80), nullable=False)

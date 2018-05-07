@@ -7,7 +7,7 @@ class ApiResponse(db.Model):
     """This class represents api_responses table, which holds APIs' responses."""
     __tablename__ = 'api_responses'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     api_id = db.Column(db.Integer, db.ForeignKey('apis.id'))
     field = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(256), nullable=True)

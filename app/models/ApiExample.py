@@ -7,7 +7,7 @@ class ApiExample(db.Model):
     """Table to store APIs' examples, api_examples table."""
     __tablename__ = 'api_examples'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     api_id = db.Column(db.Integer, db.ForeignKey('apis.id'))
     title = db.Column(db.String(80), nullable=False)
     body = db.Column(db.Text, nullable=True)

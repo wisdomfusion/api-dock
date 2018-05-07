@@ -7,7 +7,7 @@ class ApiGroup(db.Model):
     """This class represents api_groups table."""
     __tablename__ = 'api_groups'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     pid = db.Column(db.Integer, nullable=False)
     app_id = db.Column(db.Integer, db.ForeignKey('apps.id'))
     title = db.Column(db.String(80), nullable=False)
