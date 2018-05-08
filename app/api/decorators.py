@@ -1,6 +1,6 @@
 from flask import g
 from functools import wraps
-from .errors import forbidden
+from app.utils.response_helper import forbidden
 
 
 def permission_required(permission):

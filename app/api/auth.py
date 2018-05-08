@@ -12,6 +12,13 @@ from flask_jwt_extended import (
 from app.api import api
 from app.models.User import User
 from app.models.RevokedToken import RevokedToken
+from app.utils.response_helper import (
+    success,
+    error,
+    not_found,
+    unprocessable_entity,
+    internal_error
+)
 
 
 @api.resource('/login')
@@ -22,12 +29,14 @@ class UserLogin(Resource):
     def post(self):
         data = request.get_json(force=True)
         if not data:
-            return make_response({'status': 'error', 'message': 'Invalid data.'}, 400)
+            return error(message='Invalid data.')
 
         try:
             user = User.query.filter_by(name=data['name']).first()
+            if not user:
+                return not_found('User does not exists.')
 
-            if user and user.verify_password(data['password']):
+            if user.verify_password(data['password']):
                 identity = {'id': user.id, 'name': user.name}
                 access_token = create_access_token(
                     identity=identity,
@@ -47,13 +56,11 @@ class UserLogin(Resource):
                     }
                     return make_response(jsonify(response_data))
             else:
-                response_data = {
-                    'status': 'error',
-                    'message': 'User do not exist.'
-                }
-                return make_response(jsonify(response_data), 404)
+                return unprocessable_entity(data={
+                    'mismatch': ["Mismatch between user's name or password"]
+                })
         except Exception as e:
-            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
+            return internal_error()
 
 
 @api.resource('/logout/access')
@@ -67,9 +74,9 @@ class LogoutAccess(Resource):
         try:
             revoked_token = RevokedToken(jti=jti)
             revoked_token.add()
-            return make_response(jsonify({'status': 'success', 'message': 'Access token has been revoked'}))
+            return success(message='Access token has been revoked.')
         except Exception as e:
-            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
+            return internal_error()
 
 
 @api.resource('/logout/refresh')
@@ -83,9 +90,9 @@ class LogoutRefresh(Resource):
         try:
             revoked_token = RevokedToken(jti=jti)
             revoked_token.add()
-            return make_response(jsonify({'status': 'success', 'message': 'Access token has been revoked'}))
+            return success(message='Access token has been revoked.')
         except Exception as e:
-            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
+            return internal_error()
 
 
 @api.resource('/token/refresh')
@@ -97,4 +104,4 @@ class TokenRefresh(Resource):
             identity=identity,
             expires_delta=timedelta(minutes=int(current_app.config['JWT_TTL']))
         )
-        return access_token
+        return success({'access_token': access_token})

@@ -13,13 +13,11 @@ class AuthApiTestCase(unittest.TestCase):
     def test_non_registered_user_login(self):
         pass
 
-    def test_user_status(self):
+    def test_logout_access(self):
         pass
 
-    def test_valid_logout(self):
+    def test_logout_refresh(self):
         pass
 
-    def test_invalid_logout(self):
+    def test_token_refresh(self):
         pass
-
-

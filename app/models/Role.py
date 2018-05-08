@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from flask import current_app, request, url_for
 from marshmallow import fields, validate
 from . import db, ma
@@ -86,5 +85,5 @@ class Role(db.Model):
 
 
 class RoleSchema(ma.Schema):
-    class Meta:
-        model = Role
+    id = fields.Integer(dump_only=True)
+    title = fields.String(required=True, validate=validate.Length(2, 80))

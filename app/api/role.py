@@ -1,7 +1,10 @@
-from flask import make_response
 from flask_restful import Resource
 from app.api import api
-from app.models.Role import Role
+from app.models.Role import Role, RoleSchema
+from app.utils.response_helper import success
+
+role_schema = RoleSchema()
+roles_schema = RoleSchema(many=True)
 
 
 @api.resources('/roles')
@@ -11,4 +14,5 @@ class RoleList(Resource):
     """
     def get(self):
         roles = Role.query.all()
-        return make_response({'status': 'success', 'data': [role.to_json() for role in roles]})
+        result = roles_schema.dump(roles).data
+        return success(result)

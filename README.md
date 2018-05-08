@@ -1,10 +1,14 @@
 # api-dock
 
-**API Dock**, a web application for managing and testing your APIs.
+**API Dock**, a web application for managing and testing your APIs and docs.
 
 # INTRODUCTION
 
+API Dock, a web application for managing and testing your APIs and docs, implemented using Python, Flask and Vue.js.
 
+# Prerequisites
+
+See `requirements/*.txt` and `client/package.json`.
 
 # INSTALLATION
 
@@ -74,9 +78,13 @@ APP_ROOT_ADMIN=sysop
 
 USER_PER_PAGE=20
 ```
-Modify configs above.
+Modify placehold configurations above.
 
 **Run the application**
 ```
 $ python run.py runserver
 ```
+
+# CONTRIBUTION
+
+Fork the repo, commit your code or corrections, and request a PR. :)

@@ -1,10 +1,10 @@
-import unittest
 import json
 from app import create_app, db
-from app.models import User, Role
+from app.models.Role import Role
+from tests.base import BaseTestCase
 
 
-class ApiTestCase(unittest.TestCase):
+class ApiTestCase(BaseTestCase):
     def setUp(self):
         self.app = create_app('testing')
         self.app_context = self.app.app_context()
@@ -17,9 +17,6 @@ class ApiTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-
-    def get_api_headers(self, name, password):
-        return {'token': ''}
 
     def test_404(self):
         response = self.client.get(
