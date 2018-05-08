@@ -69,28 +69,27 @@ class UserItem(Resource):
     Show user, edit user, and delete user
     """
     @jwt_required
-    def get(id):
+    def get(self, id):
         user = User.query.get_or_404(id)
         response_data = {
             'status': 'success',
             'data': user_schema.dump(user).data
         }
-        return make_response(response_data)
+        return make_response(jsonify(response_data))
 
     @jwt_required
-    def patch(id):
+    def patch(self, id):
         json_data = request.get_json(force=True)
-
         if not json_data:
             return make_response({'status': 'error', 'message': 'Invalid data.'}, 400)
 
         data, errors = user_schema.load(json_data)
-
         if errors:
-            return make_response(errors, 422)
+            return make_response(jsonify(errors), 422)
 
         user = User.query.get_or_404(id)
-        user.password(data.get('password'))
+        if data.get('password'):
+            user.password = data.get('password')
         user.role_id = data.get('role_id')
         user.status = data.get('status')
         user.updated_at = datetime.utcnow()
@@ -102,12 +101,12 @@ class UserItem(Resource):
                 'message': 'Successfully edit a user.',
                 'data': user_schema.dump(user).data
             }
-            return make_response(response_data)
+            return make_response(jsonify(response_data))
         except Exception as e:
-            return make_response({'status': 'error', 'message': 'Internal Server Error'}, 500)
+            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
 
     @jwt_required
-    def delete(id):
+    def delete(self, id):
         user = User.query.get_or_404(id)
         user.deleted_at = datetime.utcnow()
 
@@ -118,6 +117,6 @@ class UserItem(Resource):
                 'message': 'Successfully delete a user.',
                 'data': user_schema.dump(user).data
             }
-            return make_response(response_data)
+            return make_response(jsonify(response_data))
         except Exception as e:
-            return make_response({'status': 'error', 'message': 'Internal Server Error'}, 500)
+            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)

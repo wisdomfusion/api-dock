@@ -72,7 +72,6 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     id = fields.Integer(dump_only=True)
     name = fields.String(
-        required=True,
         validate=validate.Length(2, 20),
         error_messages={
             'required': 'name is required.',
