@@ -8,9 +8,29 @@
 
 # INSTALLATION
 
+Install `pip` and `virtualenv` first:
 ```
-cat .env
+# pip install -U pip
+# pip install virtualenv
+```
 
+Deploy the application:
+```
+$ git clone git@github.com:WisdomFusion/api-dock.git
+$ cd api-dock/
+$ virtualenv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ mysql -u user -p
+> create database apidb;
+> \q
+$ python run.py db init
+$ python run.py migrate
+$ python run.py deploy
+```
+
+Add .env file to application root folder:
+```
 APP_CONFIG=development
 APP_KEY=
 APP_URL=
@@ -32,10 +52,15 @@ REDIS_HOST=127.0.0.1
 REDIS_PASSWORD=null
 REDIS_PORT=6379
 
-JWT_SECRET=
+JWT_SECRET_KEY=123456
 JWT_TTL=60
 
 APP_ROOT_ADMIN=sysop
 
 USER_PER_PAGE=20
+```
+
+Run the application:
+```
+$ python run.py runserver
 ```
