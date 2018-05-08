@@ -24,28 +24,17 @@ $ git clone git@github.com:WisdomFusion/api-dock.git
 $ cd api-dock/
 ```
 
-**Create python virtual environment (Linux and macOS shell)**
+**Create Python virtual environment (Linux and macOS shell)**
 ```
 $ virtualenv venv
 $ source venv/bin/activate
 ```
 
-**Create python virtual environment (Windows cmd)**
+**Create Python virtual environment (Windows cmd)**
 ```
 $ python -m venv venv
 $ venv\Scripts\activate.bat
 $ python -m pip install -U pip
-```
-
-**Deploy the application**
-```
-$ pip install -r requirements.txt
-$ mysql -u user -p
-> create database apidb;
-> \q
-$ python run.py db init
-$ python run.py migrate
-$ python run.py deploy
 ```
 
 **Add `.env` file to application root folder**
@@ -79,6 +68,19 @@ APP_ROOT_ADMIN=sysop
 USER_PER_PAGE=20
 ```
 Modify placehold configurations above.
+
+
+**Deploy the application**
+```
+$ pip install -r requirements.txt
+
+$ mysql -u user -p
+> create database apidb;
+> \q
+
+$ python run.py migrate
+$ python run.py deploy
+```
 
 **Run the application**
 ```
