@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import config
 from app.models import db, ma
+from app.models.RevokedToken import RevokedToken
 
 
 def create_app(config_name):
@@ -16,6 +17,13 @@ def create_app(config_name):
     ma.init_app(app)
 
     jwt = JWTManager(app)
+    app.config['JWT_BLACKLIST_ENABLED'] = True
+    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+
+    @jwt.token_in_blacklist_loader
+    def check_if_token_in_blacklist(decrypted_token):
+        jti = decrypted_token['jti']
+        return RevokedToken.is_jti_blacklisted(jti)
 
     from .api import api_blueprint
     app.register_blueprint(api_blueprint)

@@ -1,7 +1,6 @@
 import jwt
 from datetime import datetime, timedelta
 from flask import current_app
-from flask_jwt_extended import create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from marshmallow import fields, validate
 from . import db, ma
@@ -66,41 +65,11 @@ class User(db.Model):
     def is_administrator(self):
         return self.can(Permission.ADMIN)
 
-    def to_json(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'status': self.status,
-            'last_login_at': self.last_login_at.strftime('%Y-%m-%d %H:%M:%S'),
-            'last_login_ip': self.last_login_ip
-        }
-
-    def encode_auth_token(self):
-        access_token = create_access_token(
-            identity={'id': self.id, 'name': self.name},
-            fresh=True,
-            expires_delta=timedelta(minutes=int(current_app.config.get('JWT_TTL', 60)))
-        )
-        return access_token
-
-    @staticmethod
-    def decode_auth_token(token):
-        try:
-            payload = jwt.decode(token, current_app.config.get('JWT_SECRET'))
-            print(payload)
-            return payload['sub']
-        except jwt.ExpiredSignatureError:
-            return 'Token expired. Please login again.'
-        except jwt.InvalidTokenError:
-            return 'Invalid token. Please login again.'
-
     def __repr__(self):
         return '<User id:{} name:{}>'.format(self.id, self.name)
 
 
 class UserSchema(ma.ModelSchema):
-    id = fields.Integer(dump_only=True)
-    name = fields.String(required=True, validate=validate.Length(3, 20))
-    password = fields.String()
-    role_id = fields.Integer()
-    status = fields.Integer()
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'role_id', 'status', 'last_login_at', 'last_login_ip', 'created_at', 'updated_at', 'deleted_at')

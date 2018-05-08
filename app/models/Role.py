@@ -86,5 +86,5 @@ class Role(db.Model):
 
 
 class RoleSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    title = fields.String(required=True, validate=validate.Length(2, 80))
+    class Meta:
+        model = Role

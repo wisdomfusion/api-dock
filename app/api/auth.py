@@ -1,5 +1,5 @@
 from flask import request, make_response, jsonify, current_app
-from datetime import datetime, timedelta
+from datetime import timedelta
 from flask_restful import Resource
 from flask_jwt_extended import (
     create_access_token,
@@ -10,9 +10,8 @@ from flask_jwt_extended import (
     get_raw_jwt
 )
 from app.api import api
-from app.models.User import User, UserSchema
-
-user_schema = UserSchema()
+from app.models.User import User
+from app.models.RevokedToken import RevokedToken
 
 
 @api.resource('/login')
@@ -21,29 +20,30 @@ class UserLogin(Resource):
     User Login Resource
     """
     def post(self):
-        json_data = request.get_json(force=True)
-        print(json_data)
-
-        if not json_data:
-            return make_response({'status': 'error', 'message': 'Invalid data.'}, 400)
-
-        data, errors = user_schema.load(json_data)
-
-        if errors:
-            return make_response(errors, 422)
-
+        data = request.get_json(force=True)
         if not data:
             return make_response({'status': 'error', 'message': 'Invalid data.'}, 400)
 
         try:
             user = User.query.filter_by(name=data['name']).first()
+
             if user and user.verify_password(data['password']):
-                access_token = user.encode_auth_token()
-                if access_token:
+                identity = {'id': user.id, 'name': user.name}
+                access_token = create_access_token(
+                    identity=identity,
+                    expires_delta=timedelta(minutes=int(current_app.config['JWT_TTL']))
+                )
+                refresh_token = create_refresh_token(identity=identity)
+
+                if access_token and refresh_token:
                     response_data = {
                         'status': 'success',
                         'message': 'Successfully logged in.',
-                        'access_token': access_token
+                        'data': {
+                            'user': identity,
+                            'access_token': access_token,
+                            'refresh_token': refresh_token
+                        }
                     }
                     return make_response(jsonify(response_data))
             else:
@@ -53,17 +53,48 @@ class UserLogin(Resource):
                 }
                 return make_response(jsonify(response_data), 404)
         except Exception as e:
-            response_data = {
-                'status': 'error',
-                'message': 'Internal Server Error'
-            }
-            return make_response(jsonify(response_data), 500)
+            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
 
 
-@api.resource('/logout')
-class UserLogout(Resource):
+@api.resource('/logout/access')
+class LogoutAccess(Resource):
     """
     User Logout Resource
     """
+    @jwt_required
     def post(self):
-        return {'message': 'User Logout'}
+        jti = get_raw_jwt()['jti']
+        try:
+            revoked_token = RevokedToken(jti=jti)
+            revoked_token.add()
+            return make_response(jsonify({'status': 'success', 'message': 'Access token has been revoked'}))
+        except Exception as e:
+            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
+
+
+@api.resource('/logout/refresh')
+class LogoutRefresh(Resource):
+    """
+    User Logout Refresh
+    """
+    @jwt_refresh_token_required
+    def post(self):
+        jti = get_raw_jwt()['jti']
+        try:
+            revoked_token = RevokedToken(jti=jti)
+            revoked_token.add()
+            return make_response(jsonify({'status': 'success', 'message': 'Access token has been revoked'}))
+        except Exception as e:
+            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
+
+
+@api.resource('/token/refresh')
+class TokenRefresh(Resource):
+    @jwt_refresh_token_required
+    def post(self):
+        identity = get_jwt_identity()
+        access_token = create_access_token(
+            identity=identity,
+            expires_delta=timedelta(minutes=int(current_app.config['JWT_TTL']))
+        )
+        return access_token
