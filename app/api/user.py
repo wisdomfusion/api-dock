@@ -17,8 +17,8 @@ class AllUsers(Resource):
     @jwt_required
     def get(self, page=1):
         data = request.get_json()
-        if data and data['page']:
-            page = data['page']
+        if data and data.get('page'):
+            page = data.get('page')
         per_page = int(current_app.config.get('USER_PER_PAGE', 20))
         pagination = User.query.order_by(User.created_at.desc()).paginate(
             page=page,
@@ -38,19 +38,16 @@ class AllUsers(Resource):
     @jwt_required
     def post(self):
         json_data = request.get_json(force=True)
-
         if not json_data:
-            return make_response({'status': 'error', 'message': 'Invalid data.'}, 400)
+            return make_response(jsonify({'status': 'error', 'message': 'Invalid data.'}), 400)
 
         data, errors = user_schema.load(json_data)
-
         if errors:
-            return make_response(errors, 422)
+            return make_response(jsonify(errors), 422)
 
-        user = User.query.filter_by(name=data['name']).first()
-
+        user = User.query.filter_by(name=data.get('name')).first()
         if user:
-            return make_response({'status': 'error', 'message': 'User `{}` already exists.'.format(data['name'])}, 400)
+            return make_response(jsonify({'status': 'error', 'message': 'User `{}` already exists.'.format(data.get('name'))}), 400)
 
         user = User(**data)
         try:
@@ -61,9 +58,9 @@ class AllUsers(Resource):
                 'message': 'Successfully add new user.',
                 'data': result
             }
-            return make_response(response_data)
+            return make_response(jsonify(response_data))
         except Exception as e:
-            return make_response({'status': 'error', 'message': 'Internal Server Error'}, 500)
+            return make_response(jsonify({'status': 'error', 'message': 'Internal Server Error'}), 500)
 
 
 @api.resource('/users/<int:id>')
@@ -93,9 +90,9 @@ class UserItem(Resource):
             return make_response(errors, 422)
 
         user = User.query.get_or_404(id)
-        user.password(data['password'])
-        user.role_id = data['role_id']
-        user.status = data['status']
+        user.password(data.get('password'))
+        user.role_id = data.get('role_id')
+        user.status = data.get('status')
         user.updated_at = datetime.utcnow()
 
         try:

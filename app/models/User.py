@@ -69,7 +69,21 @@ class User(db.Model):
         return '<User id:{} name:{}>'.format(self.id, self.name)
 
 
-class UserSchema(ma.ModelSchema):
-    class Meta:
-        model = User
-        fields = ('id', 'name', 'role_id', 'status', 'last_login_at', 'last_login_ip', 'created_at', 'updated_at', 'deleted_at')
+class UserSchema(ma.Schema):
+    id = fields.Integer(dump_only=True)
+    name = fields.String(
+        required=True,
+        validate=validate.Length(2, 20),
+        error_messages={
+            'required': 'name is required.',
+            'validate': 'The length of name should between 2 and 20.'
+        }
+    )
+    password = fields.String()
+    role_id = fields.Integer()
+    status = fields.Integer(validate=validate.OneOf((1, 2)))
+    last_login_at = fields.DateTime(default=None)
+    last_login_ip = fields.String(default=None)
+    created_at = fields.DateTime(dump_only=True, default=None)
+    updated_at = fields.DateTime(dump_only=True, default=None)
+    deleted_at = fields.DateTime(dump_only=True, default=None)
