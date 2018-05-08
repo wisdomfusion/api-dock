@@ -8,18 +8,33 @@
 
 # INSTALLATION
 
-Install `pip` and `virtualenv` first:
+**Install `pip` and `virtualenv`**
 ```
 # pip install -U pip
 # pip install virtualenv
 ```
 
-Deploy the application:
+**Clone the application**
 ```
 $ git clone git@github.com:WisdomFusion/api-dock.git
 $ cd api-dock/
+```
+
+**Create python virtual environment (Linux and macOS shell)**
+```
 $ virtualenv venv
 $ source venv/bin/activate
+```
+
+**Create python virtual environment (Windows cmd)**
+```
+$ python -m venv venv
+$ venv\Scripts\activate.bat
+$ python -m pip install -U pip
+```
+
+**Deploy the application**
+```
 $ pip install -r requirements.txt
 $ mysql -u user -p
 > create database apidb;
@@ -29,7 +44,7 @@ $ python run.py migrate
 $ python run.py deploy
 ```
 
-Add .env file to application root folder:
+**Add `.env` file to application root folder**
 ```
 APP_CONFIG=development
 APP_KEY=
@@ -59,8 +74,9 @@ APP_ROOT_ADMIN=sysop
 
 USER_PER_PAGE=20
 ```
+Modify configs above.
 
-Run the application:
+**Run the application**
 ```
 $ python run.py runserver
 ```
