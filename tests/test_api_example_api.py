@@ -1,7 +1,8 @@
 import unittest
+from tests.base import BaseTestCase
 
 
-class ApiExampleApiTestCase(unittest.TestCase):
+class ApiExampleApiTestCase(BaseTestCase):
     def test_get_api_examples(self):
         pass
 
@@ -13,3 +14,7 @@ class ApiExampleApiTestCase(unittest.TestCase):
 
     def test_delete_api_example(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

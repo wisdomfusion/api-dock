@@ -8,6 +8,8 @@ API Dock, a web application for managing and testing your APIs and docs, impleme
 
 # Prerequisites
 
+- Python 3.6.*
+
 See `requirements/*.txt` and `client/package.json`.
 
 # INSTALLATION

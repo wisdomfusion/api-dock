@@ -1,7 +1,8 @@
 import unittest
+from tests.base import BaseTestCase
 
 
-class ApiApiTestCase(unittest.TestCase):
+class ApiApiTestCase(BaseTestCase):
     def test_get_apis_list(self):
         pass
 
@@ -16,3 +17,7 @@ class ApiApiTestCase(unittest.TestCase):
 
     def test_delete_api(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,10 +1,10 @@
 import unittest
 from app import create_app, db
-from .base import BaseTestCase
+from tests.base import BaseTestCase
 from app.models.User import User
 
 
-class AuthApiTestCase(unittest.TestCase):
+class AuthApiTestCase(BaseTestCase):
     """Auth API Tests."""
 
     def test_registered_user_login(self):
@@ -21,3 +21,7 @@ class AuthApiTestCase(unittest.TestCase):
 
     def test_token_refresh(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

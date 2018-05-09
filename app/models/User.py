@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from marshmallow import fields, validate
+
 from . import db, ma
 from .Permission import Permission
 from .Role import Role

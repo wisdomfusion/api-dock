@@ -2,6 +2,7 @@ from flask import request, current_app, url_for
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from datetime import datetime
+
 from app.api import api
 from app.models.User import User, UserSchema
 from app.utils.response_helper import (

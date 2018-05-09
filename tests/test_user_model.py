@@ -1,5 +1,5 @@
 import unittest
-from .base import BaseTestCase
+from tests.base import BaseTestCase
 from app.models.User import User
 
 
@@ -11,3 +11,7 @@ class UserModelTestCase(BaseTestCase):
 
     def decode_auth_token(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()

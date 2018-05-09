@@ -1,7 +1,11 @@
 import unittest
-from .base import BaseTestCase
+from tests.base import BaseTestCase
 
 
-class RoleApiTestCase(unittest.TestCase):
+class RoleApiTestCase(BaseTestCase):
     def test_get_roles_list(self):
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()
