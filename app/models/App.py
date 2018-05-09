@@ -19,5 +19,16 @@ class App(db.Model):
     deleted_at = db.Column(db.DateTime, default=None)
     api_groups = db.relationship('ApiGroup', backref='app', lazy='dynamic')
 
+    def __init__(self, **kwargs):
+        super(App, self).__init__(**kwargs)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def __repr__(self):
         return '<App {}>'.format(self.title)

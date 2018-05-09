@@ -23,5 +23,16 @@ class Api(db.Model):
     api_responses = db.relationship('ApiResponse', backref='api', lazy='dynamic')
     api_examples = db.relationship('ApiExample', backref='api', lazy='dynamic')
 
+    def __init__(self, **kwargs):
+        super(Api, self).__init__(**kwargs)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def __repr__(self):
         return '<Api {}>'.format(self.title)

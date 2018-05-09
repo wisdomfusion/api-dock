@@ -12,5 +12,12 @@ class Log(db.Model):
     action = db.Column(db.String(256))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def __init__(self, **kwargs):
+        super(Log, self).__init__(**kwargs)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
     def __repr__(self):
         return '<Log {}>'.format(self.action)

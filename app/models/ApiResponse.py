@@ -17,5 +17,16 @@ class ApiResponse(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, default=None)
 
+    def __init__(self, **kwargs):
+        super(ApiResponse, self).__init__(**kwargs)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def __repr__(self):
         return '<ApiResponse {}>'.format(self.key)

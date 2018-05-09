@@ -15,5 +15,16 @@ class ApiExample(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, default=None)
 
+    def __init__(self, **kwargs):
+        super(ApiExample, self).__init__(**kwargs)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def __repr__(self):
         return '<ApiExample {}>'.format(self.title)

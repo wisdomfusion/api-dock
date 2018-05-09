@@ -73,13 +73,6 @@ class Role(db.Model):
     def has_permission(self, perm):
         return self.permissions & perm == perm
 
-    def to_json(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'default': self.default
-        }
-
     def __repr__(self):
         return '<Role {}>'.format(self.title)
 
@@ -87,3 +80,4 @@ class Role(db.Model):
 class RoleSchema(ma.Schema):
     id = fields.Integer(dump_only=True)
     title = fields.String(required=True, validate=validate.Length(2, 80))
+    default = fields.Boolean()
