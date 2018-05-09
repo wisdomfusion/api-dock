@@ -9,10 +9,10 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_raw_jwt
 )
-from . import api
-from ..models.User import User
-from ..models.RevokedToken import RevokedToken
-from ..utils.response_helper import (
+from app.api import api
+from app.models.User import User
+from app.models.RevokedToken import RevokedToken
+from app.utils.response_helper import (
     success,
     error,
     not_found,
