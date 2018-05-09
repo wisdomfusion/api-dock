@@ -20,4 +20,6 @@ venv
 /tmp
 /temp
 
+/migrations/versions/*.py
+
 .DS_Store
