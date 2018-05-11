@@ -10,6 +10,9 @@ class UserApiTestCase(BaseTestCase):
     def test_new_user(self):
         pass
 
+    def test_new_user_already_exists(self):
+        pass
+
     def test_show_user(self):
         pass
 

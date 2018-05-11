@@ -31,9 +31,16 @@ app = create_app(os.getenv('APP_CONFIG', 'default'))
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(app=app, db=db,
-                User=User, Role=Role, App=App, Api=Api, ApiGroup=ApiGroup,
-                ApiResponse=ApiResponse, ApiExample=ApiExample, Log=Log)
+    return dict(app=app,
+                db=db,
+                User=User,
+                Role=Role,
+                App=App,
+                Api=Api,
+                ApiGroup=ApiGroup,
+                ApiResponse=ApiResponse,
+                ApiExample=ApiExample,
+                Log=Log)
 
 
 manager = Manager(app)
@@ -45,8 +52,8 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def routes():
-    """Helper to list routes."""
-    import urllib
+    """Helper to list routes"""
+    from urllib.parse import unquote
     output = []
     for rule in app.url_map.iter_rules():
 
@@ -55,7 +62,7 @@ def routes():
             options[arg] = "[{0}]".format(arg)
 
         methods = ','.join(rule.methods)
-        line = urllib.parse.unquote("{:30s} {:50s} {}".format(rule.endpoint, methods, rule))
+        line = unquote("{:30s} {:50s} {}".format(rule.endpoint, methods, rule))
         output.append(line)
 
     for line in sorted(output):
@@ -64,7 +71,7 @@ def routes():
 
 @manager.command
 def test(coverage=False):
-    """Run the unit tests."""
+    """Run the unit tests"""
     if coverage and not os.getenv('APP_COVERAGE'):
         import subprocess
         sys.exit(subprocess.call(sys.argv))
@@ -75,12 +82,15 @@ def test(coverage=False):
     if COV:
         COV.stop()
         COV.save()
+
         print('Coverage Summary:')
         COV.report()
+
         basedir = os.path.abspath(os.path.dirname(__file__))
         coverage_dir = os.path.join(basedir, 'tmp/coverage')
         COV.html_report(directory=coverage_dir)
         print('HTML version: file://%s/index.html' % coverage_dir)
+
         COV.erase()
 
 
@@ -88,13 +98,15 @@ def test(coverage=False):
 def profile(length, profile_dir):
     """Start the application under the code profiler"""
     from werkzeug.contrib.profiler import ProfilerMiddleware
-    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length], profile_dir=profile_dir)
+    app.wsgi_app = ProfilerMiddleware(app.wsgi_app,
+                                      restrictions=[length],
+                                      profile_dir=profile_dir)
     app.run()
 
 
 @manager.command
 def deploy():
-    """Run deployment tasks."""
+    """Run deployment tasks and prepare necessary data"""
     upgrade()
     Role.insert_roles()
     User.insert_root_admin()
