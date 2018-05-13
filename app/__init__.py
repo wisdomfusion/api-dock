@@ -12,7 +12,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     config[config_name].init_app(app)
-    app.secret_key = app.config['APP_KEY']
+    app.secret_key = app.config['SECRET_KEY']
 
     db.init_app(app)
     ma.init_app(app)

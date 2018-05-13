@@ -9,8 +9,9 @@ if os.path.exists(dotenv_path):
 class Config:
     """Parent configuration class."""
     APP_CONFIG = os.getenv('APP_CONFIG', 'default')
-    APP_KEY = os.getenv('APP_KEY')
     APP_URL = os.getenv('APP_URL')
+
+    SECRET_KEY = os.getenv('SECRET_KEY')
 
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 
