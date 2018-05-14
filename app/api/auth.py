@@ -28,7 +28,6 @@ class UserLogin(Resource):
     """
     def post(self):
         data = request.get_json(force=True)
-        print(data)
         if not data:
             return error(message='Invalid data.')
 
