@@ -1,6 +1,6 @@
 -r common.txt
 coverage==4.5.1
-httpie==0.9.9
+httpie==1.0.3
 idna==2.6
 Pygments==2.2.0
 requests==2.18.4
